@@ -31,6 +31,15 @@ public class Insert {
 		initialize();
 		this.frame.setVisible(true);
 	}
+	
+	public void test(){
+		System.out.println("Hello World");
+	}
+	
+	public void jaja(){
+		String feo = "jajaja";
+		System.out.println(feo);
+	}
 
 	/**
 	 * Initialize the contents of the frame.
