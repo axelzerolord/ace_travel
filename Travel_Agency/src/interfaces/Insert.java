@@ -1,5 +1,5 @@
 package interfaces;
-
+codecodecode
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -34,7 +34,6 @@ public class Insert {
 	
 	public void test(){
 		System.out.println("Hello World");
-		//asco
 	}
 	
 	
