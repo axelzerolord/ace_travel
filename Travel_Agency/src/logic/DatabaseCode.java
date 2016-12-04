@@ -1,32 +1,27 @@
 package logic;
 
 import java.sql.*;
+
 public class DatabaseCode {
-	
-public static void main(String[] args) {
-		
-		try
-		{
+
+	public static void main(String[] args) {
+
+		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe",
-					"mrwhite","IamZero1995");
+			Connection con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe", "mrwhite","IamZero1995");
 			Statement st = con.createStatement();
-			//Insert
-			String insert = "Insert into dias " + "VALUES ((select count(dia_ID) from dias),'Lunes')";
+			// Insert
+			String insert = "Insert into dias "+ "VALUES ((select count(dia_ID) from dias),'Lunes')";
 			st.executeUpdate(insert);
 			System.out.println("Insertado");
+			// Read
 			String sql = "select * from dias";
-			
-			//Read
 			ResultSet rs = st.executeQuery(sql);
-			while(rs.next())
-			{
-				System.out.println(rs.getInt(1)+ " " + rs.getString(2));
+			while (rs.next()) {
+				System.out.println(rs.getInt(1) + " " + rs.getString(2));
 			}
 			con.close();
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 
