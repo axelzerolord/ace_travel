@@ -33,7 +33,7 @@ public class RegisterModel extends JDialog {
 	 * Create the dialog.
 	 */
 	public RegisterModel() {
-		setTitle("Manage Brands");
+		setTitle("Manage Models");
 		setBounds(100, 100, 368, 234);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
