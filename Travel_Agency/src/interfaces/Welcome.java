@@ -6,46 +6,40 @@ import javax.swing.JFrame;
 import java.awt.SystemColor;
 import java.awt.Font;
 import java.awt.Color;
-import javax.swing.JDesktopPane;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-import java.awt.FlowLayout;
-import javax.swing.JTabbedPane;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import java.awt.Button;
-import javax.swing.JToolBar;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class main {
+public class Welcome {
 
 	private JFrame mainFrame;
+	private Insert myInsert;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					main window = new main();
-					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
+						Welcome window = new Welcome();
+						window.mainFrame.setVisible(true);
+					} 
+					catch (Exception e) 
+					{
+						e.printStackTrace();
+					}
 				}
 			}
-		});
+		);
 	}
 
 	/**
 	 * Create the application.
 	 */
-	public main() {
+	public Welcome() {
 		initialize();
 	}
 
@@ -64,22 +58,23 @@ public class main {
 		mainFrame.setResizable(false);
 		mainFrame.setBounds(100, 100, 775, 563);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		JMenuBar menuBar = new JMenuBar();
 		mainFrame.setJMenuBar(menuBar);
-		
 		JMenu mnHome = new JMenu("Home");
 		menuBar.add(mnHome);
-		
 		JMenu mnReservations = new JMenu("Reservations");
 		menuBar.add(mnReservations);
-		
 		JMenuItem mntmReserve = new JMenuItem("Reserve");
-		mntmReserve.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Insert myInsert = new Insert();
+		mntmReserve.addActionListener
+		(
+			new ActionListener() 
+			{
+				public void actionPerformed(ActionEvent e) 
+				{
+					setMyInsert(new Insert());
+				}
 			}
-		});
+		);
 		mnReservations.add(mntmReserve);
 		
 		JMenu mnHelp = new JMenu("Help");
@@ -87,5 +82,13 @@ public class main {
 		
 		JMenuItem mntmAboutUs = new JMenuItem("About us");
 		mnHelp.add(mntmAboutUs);
+	}
+
+	public Insert getMyInsert() {
+		return myInsert;
+	}
+
+	public void setMyInsert(Insert myInsert) {
+		this.myInsert = myInsert;
 	}
 }
