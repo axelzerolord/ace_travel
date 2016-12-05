@@ -1,22 +1,43 @@
 package interfaces;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.JFormattedTextField;
 import javax.swing.border.LineBorder;
+import javax.swing.text.MaskFormatter;
+
 import java.awt.Color;
 
+import logic.*;
+
+import javax.swing.SwingConstants;
+
+import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import javax.swing.SpinnerNumberModel;
+
+@SuppressWarnings("unused")
 public class RegisterBus extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
+	private JSpinner year_spinner;
+	private JSpinner capacity_spinner;
+	private JComboBox<String> modelComboBox;
+	private JComboBox<String> brandComboBox;
 
 	/**
 	 * Launch the application.
@@ -33,12 +54,17 @@ public class RegisterBus extends JDialog {
 
 	/**
 	 * Create the dialog.
+	 * @throws ParseException 
 	 */
-	public RegisterBus() {
+	public RegisterBus() throws ParseException 
+	{
+		
+		modelComboBox = new JComboBox<String>();
+		brandComboBox = new JComboBox<String>();
 		setTitle("Register Bus");
-		setBounds(100, 100, 311, 300);
+		setBounds(100, 100, 380, 298);
 		getContentPane().setLayout(null);
-		contentPanel.setBounds(0, 0, 295, 202);
+		contentPanel.setBounds(12, 13, 339, 222);
 		contentPanel.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
 		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
@@ -48,57 +74,91 @@ public class RegisterBus extends JDialog {
 		contentPanel.add(lblMarca);
 		
 		JLabel lblModelo = new JLabel("Model");
-		lblModelo.setBounds(20, 71, 46, 14);
+		lblModelo.setBounds(20, 71, 65, 14);
 		contentPanel.add(lblModelo);
 		
 		JLabel lblYear = new JLabel("Year");
 		lblYear.setBounds(20, 96, 46, 14);
 		contentPanel.add(lblYear);
 		
-		JLabel lblAdquisitionDate = new JLabel("Adquisition date");
-		lblAdquisitionDate.setBounds(20, 121, 83, 14);
-		contentPanel.add(lblAdquisitionDate);
-		
 		JLabel lblCapacity = new JLabel("Capacity");
-		lblCapacity.setBounds(20, 146, 46, 14);
+		lblCapacity.setBounds(20, 123, 95, 14);
 		contentPanel.add(lblCapacity);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(111, 43, 158, 20);
-		contentPanel.add(comboBox);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(111, 68, 158, 20);
-		contentPanel.add(comboBox_1);
-		
-		JSpinner spinner = new JSpinner();
-		spinner.setBounds(111, 93, 59, 20);
-		contentPanel.add(spinner);
-		
-		JFormattedTextField formattedTextField = new JFormattedTextField();
-		formattedTextField.setBounds(110, 118, 104, 20);
-		contentPanel.add(formattedTextField);
-		
-		JSpinner spinner_1 = new JSpinner();
-		spinner_1.setBounds(110, 143, 60, 20);
-		contentPanel.add(spinner_1);
+		brandComboBox.addActionListener(new ActionListener() 
 		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBorder(new LineBorder(new Color(0, 0, 0)));
-			buttonPane.setBounds(0, 228, 295, 33);
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane);
+			public void actionPerformed(ActionEvent e) 
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				RegisterModel.loadModelCBox(modelComboBox, brandComboBox);
 			}
+		});
+		RegisterBrand.loadBrandCBox(brandComboBox);
+		brandComboBox.setBounds(166, 46, 158, 20);
+		contentPanel.add(brandComboBox);
+		
+		RegisterModel.loadModelCBox(modelComboBox, brandComboBox);
+		modelComboBox.setBounds(166, 71, 158, 20);
+		contentPanel.add(modelComboBox);
+		
+		year_spinner = new JSpinner();
+		capacity_spinner = new JSpinner();
+		year_spinner.setModel(new SpinnerNumberModel(1990, 1900, 2016, 1));
+		year_spinner.setBounds(166, 96, 59, 20);
+		contentPanel.add(year_spinner);
+
+		
+		capacity_spinner.setModel(new SpinnerNumberModel(30, 30, 50, 4));
+		capacity_spinner.setBounds(166, 120, 60, 20);
+		contentPanel.add(capacity_spinner);
+		
+		JLabel lblBusData = new JLabel("Bus data");
+		lblBusData.setFont(new Font("Arial", Font.PLAIN, 13));
+		lblBusData.setHorizontalAlignment(SwingConstants.LEFT);
+		lblBusData.setBounds(20, 13, 113, 16);
+		contentPanel.add(lblBusData);
+		
+		JButton btnNewButton = new JButton("Register");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
 			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				insertBus();
 			}
-		}
+		});
+		btnNewButton.setBounds(163, 153, 161, 32);
+		contentPanel.add(btnNewButton);
 	}
+	public void insertBus () 
+	{
+		DatabaseHandler myHandler = new DatabaseHandler();
+		System.out.print("Insert into autobuses (autobus_id,marca_id,modelo_id,capacidad,fecha) "
+				+ "VALUES ("
+				+ "(select count(autobus_id) from autobuses),"
+				+ "(select marca_id from marcas where nombre='"+brandComboBox.getSelectedItem()+"'),"
+				+ "(select modelo_id from modelos where modelo_id=(select modelo_id from marca_modelo where marca_id=(select marca_id from marcas where nombre='"+brandComboBox.getSelectedItem()+"') and modelo_id=(select modelo_id from marca_modelo where modelo_id=(select modelo_id from modelos where modelo='"+modelComboBox.getSelectedItem()+"') ))),"
+				+ capacity_spinner.getValue()+","
+				+ year_spinner.getValue()+")");
+		myHandler.runUpdate("Insert into autobuses (autobus_id,marca_id,modelo_id,capacidad,fecha) "
+				+ "VALUES ("
+				+ "(select count(autobus_id) from autobuses),"
+				+ "(select marca_id from marcas where nombre='"+brandComboBox.getSelectedItem()+"'),"
+				+ "(select modelo_id from modelos where modelo_id=(select modelo_id from marca_modelo where marca_id=(select marca_id from marcas where nombre='"+brandComboBox.getSelectedItem()+"') and modelo_id=(select modelo_id from marca_modelo where modelo_id=(select modelo_id from modelos where modelo='"+modelComboBox.getSelectedItem()+"') ))),"
+				+ capacity_spinner.getValue()+","
+				+ year_spinner.getValue()+")");
+		myHandler.closeConnection();
+	}
+	/* 
+	 * jodido.
+	 select marca_id from marcas where nombre='Toyota';
+	 
+select modelo_id from modelos where modelo_id=(select modelo_id from marca_modelo where marca_id=(select marca_id from marcas where nombre='Toyota') and modelo_id=(select modelo_id=(select modelo_id from modelos where modelo='Volga') ); 
+	 
+Insert into autobuses (autobus_id,marca_id,modelo_id,capacidad,fecha) VALUES ((select count(autobus_id) from autobuses),(select marca_id from marcas where nombre='Toyota'),
+(
+	select modelo_id from modelos where 
+		modelo_id=(select modelo_id from marca_modelo where marca_id=(select marca_id from marcas where nombre='Toyota') and 
+		modelo_id=(select modelo_id from marca_modelo where modelo_id=(select modelo_id from modelos where modelo='Volga') ))),30,1994
+)
+	 
+
+	 */
 }
