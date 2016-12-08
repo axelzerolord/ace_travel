@@ -24,16 +24,13 @@ public class Welcome {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-						Welcome window = new Welcome();
-						window.mainFrame.setVisible(true);
-					} 
-					catch (Exception e) 
-					{
-						e.printStackTrace();
-					}
+					Welcome window = new Welcome();
+					window.mainFrame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
-		);
+		});
 	}
 
 	/**
@@ -48,11 +45,13 @@ public class Welcome {
 	 */
 	private void initialize() {
 		mainFrame = new JFrame();
-		mainFrame.getContentPane().setFont(new Font("Times New Roman", Font.PLAIN, 13));
+		mainFrame.getContentPane().setFont(
+				new Font("Times New Roman", Font.PLAIN, 13));
 		mainFrame.getContentPane().setBackground(SystemColor.controlHighlight);
 		mainFrame.getContentPane().setForeground(Color.WHITE);
 		mainFrame.getContentPane().setLayout(null);
-		mainFrame.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC, 16));
+		mainFrame.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC,
+				16));
 		mainFrame.setTitle("Ace Travel Agency");
 		mainFrame.setBackground(SystemColor.activeCaption);
 		mainFrame.setResizable(false);
@@ -65,21 +64,16 @@ public class Welcome {
 		JMenu mnReservations = new JMenu("Reservations");
 		menuBar.add(mnReservations);
 		JMenuItem mntmReserve = new JMenuItem("Reserve");
-		mntmReserve.addActionListener
-		(
-			new ActionListener() 
-			{
-				public void actionPerformed(ActionEvent e) 
-				{
-					setMyInsert(new Insert());
-				}
+		mntmReserve.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setMyInsert(new Insert());
 			}
-		);
+		});
 		mnReservations.add(mntmReserve);
-		
+
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
-		
+
 		JMenuItem mntmAboutUs = new JMenuItem("About us");
 		mnHelp.add(mntmAboutUs);
 	}

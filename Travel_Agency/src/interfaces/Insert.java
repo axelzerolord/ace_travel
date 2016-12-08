@@ -1,11 +1,12 @@
 package interfaces;
+
 import javax.swing.JFrame;
 
 public class Insert {
 
 	private JFrame frame;
 
-public Insert() {
+	public Insert() {
 		initialize();
 		this.frame.setVisible(true);
 	}
