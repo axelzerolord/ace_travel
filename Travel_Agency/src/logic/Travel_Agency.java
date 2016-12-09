@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import com.sun.tracing.dtrace.DependencyClass;
+
 
 
 public class Travel_Agency 
@@ -69,7 +71,7 @@ public class Travel_Agency
 	public void loadclients() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from clientes");
+		ResultSet sqlClients = myHandler.runQuery("Select * from clientes order by cliente_id asc");
 		while (sqlClients.next())
 		{
 			Client newClient = new Client(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4), sqlClients.getString(5), sqlClients.getDate(6), sqlClients.getString(7), sqlClients.getString(8));
@@ -81,7 +83,7 @@ public class Travel_Agency
 	public void loadroutes() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from rutas");
+		ResultSet sqlClients = myHandler.runQuery("Select * from rutas order by ruta_id asc");
 		while (sqlClients.next())
 		{
 			Route newRoute = new Route(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4),sqlClients.getInt(5));
@@ -93,7 +95,7 @@ public class Travel_Agency
 	public void loadtrips() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from viajes");
+		ResultSet sqlClients = myHandler.runQuery("Select * from viajes order by viaje_id asc");
 		while (sqlClients.next())
 		{
 			Trip newTrip = new Trip(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4),sqlClients.getInt(5));
@@ -105,7 +107,7 @@ public class Travel_Agency
 	public void loadreservations() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from reservaciones");
+		ResultSet sqlClients = myHandler.runQuery("Select * from reservaciones order by reservacion_id asc");
 		while (sqlClients.next())
 		{
 			Reservations reservations = new Reservations(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getDate(4), sqlClients.getDate(5), sqlClients.getInt(6));
@@ -117,7 +119,7 @@ public class Travel_Agency
 	public void loadtickets() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from boletos");
+		ResultSet sqlClients = myHandler.runQuery("Select * from boletos order by boleto_id asc");
 		while (sqlClients.next())
 		{
 			Tickets tickets = new Tickets(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4), sqlClients.getInt(5), sqlClients.getInt(6),sqlClients.getInt(7),sqlClients.getInt(8));
@@ -129,7 +131,7 @@ public class Travel_Agency
 	public void loadGuests() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from invitados");
+		ResultSet sqlClients = myHandler.runQuery("Select * from invitados order by invitado_id asc");
 		while (sqlClients.next())
 		{
 			Guests guests = new Guests(sqlClients.getInt(1), sqlClients.getString(2), sqlClients.getString(3), sqlClients.getString(4), sqlClients.getDate(5));
@@ -141,7 +143,7 @@ public class Travel_Agency
 	public void loadstations() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
-		ResultSet sqlClients = myHandler.runQuery("Select * from estaciones");
+		ResultSet sqlClients = myHandler.runQuery("Select * from estaciones order by estacion_id asc");
 		while (sqlClients.next())
 		{
 			Station station = new Station(sqlClients.getInt(1),sqlClients.getInt(2), sqlClients.getString(3));
@@ -200,4 +202,17 @@ public class Travel_Agency
 		}
 		return null;
 	}
+	
+	public Reservations findReservationByID(int id)
+	{
+		for(Reservations auxReservations: Travel_Agency.getInstances().getReservations())
+		{
+			if(auxReservations.getReservacion_id()==id)
+			{
+				return auxReservations;
+			}
+		}
+		return null;
+	}
+	
 }

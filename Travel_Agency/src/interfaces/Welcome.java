@@ -19,6 +19,7 @@ public class Welcome {
 	private JFrame mainFrame;
 	private Reservation myReservation;
 	private  Travel_Agency myAgency;
+	private ManageReservations myResManager;
 
 	/**
 	 * Launch the application.
@@ -66,6 +67,9 @@ public class Welcome {
 		mainFrame.setJMenuBar(menuBar);
 		JMenu mnHome = new JMenu("Home");
 		menuBar.add(mnHome);
+		
+		JMenu mnDashboard = new JMenu("Dashboard");
+		mnHome.add(mnDashboard);
 		JMenu mnReservations = new JMenu("Reservations");
 		menuBar.add(mnReservations);
 		JMenuItem mntmReserve = new JMenuItem("Reserve");
@@ -76,6 +80,16 @@ public class Welcome {
 			}
 		});
 		mnReservations.add(mntmReserve);
+		
+		JMenuItem mntmManageReservations = new JMenuItem("Manage Reservations");
+		mntmManageReservations.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				myResManager =new ManageReservations() ;
+				myResManager.setVisible(true);
+			}
+		});
+		mnReservations.add(mntmManageReservations);
 
 		JMenu mnHelp = new JMenu("Help");
 		menuBar.add(mnHelp);
@@ -91,5 +105,4 @@ public class Welcome {
 	public void setMainFrame(JFrame mainFrame) {
 		this.mainFrame = mainFrame;
 	}
-
 }

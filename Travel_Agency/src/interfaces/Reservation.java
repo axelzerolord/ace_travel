@@ -27,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
@@ -46,11 +47,7 @@ public class Reservation extends JDialog {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField ExpressName;
 	private JTextField userField;
-	private JSpinner qtyspn;
-	private JRadioButton registeredRadio;
-	private JRadioButton expressRadio;
 	private JComboBox<String> destCombo;
 	private ButtonGroup group;
 	private JLabel namelbl;
@@ -89,56 +86,16 @@ public class Reservation extends JDialog {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
-		panel.setBounds(10, 11, 317, 178);
+		panel.setBounds(10, 11, 317, 108);
 		contentPanel.add(panel);
 		panel.setLayout(null);
 		
-		ExpressName = new JTextField();
-		ExpressName.setEnabled(false);
-		ExpressName.setColumns(10);
-		ExpressName.setBounds(62, 124, 190, 20);
-		panel.add(ExpressName);
-		
-		
-		
-		JLabel lblAnonymousFields = new JLabel("Anonymous Fields");
-		lblAnonymousFields.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblAnonymousFields.setBounds(99, 99, 131, 14);
-		panel.add(lblAnonymousFields);
-		
-		JLabel label_1 = new JLabel("Name");
-		label_1.setBounds(10, 127, 46, 14);
-		panel.add(label_1);
-		
-		expressRadio = new JRadioButton("Anonymous");
-		expressRadio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ExpressName.setEnabled(true);
-				userField.setEnabled(false);
-			}
-		});
-		expressRadio.setBounds(6, 58, 95, 23);
-		panel.add(expressRadio);
-		
-		registeredRadio = new JRadioButton("Registered");
-		registeredRadio.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				ExpressName.setEnabled(false);
-				userField.setEnabled(true);
-				
-			}
-		});
-		registeredRadio.setBounds(6, 32, 95, 23);
-		panel.add(registeredRadio);
-		
 		group = new ButtonGroup();
-		group.add(expressRadio);
-		group.add(registeredRadio);
 		
-		JLabel label_2 = new JLabel("Type of client");
-		label_2.setFont(new Font("Tahoma", Font.BOLD, 11));
-		label_2.setBounds(121, 11, 83, 14);
-		panel.add(label_2);
+		JLabel lblClient = new JLabel("*Type in User's name or ID");
+		lblClient.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblClient.setBounds(24, 13, 171, 14);
+		panel.add(lblClient);
 		
 		
 		
@@ -147,28 +104,33 @@ public class Reservation extends JDialog {
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
+				
+				
 				String[] myString = userField.getText().split(":");
-				Client cliente=Travel_Agency.getInstances().findbyID(Integer.valueOf(myString[1]));
-				if(cliente!=null)
+				if(myString.length>1)
 				{
-					namelbl.setText(cliente.getName());
-					lastlbl.setText(cliente.getLast_name());
-					viplbl.setText(String.valueOf(cliente.getVip_lv_id()));
-					idfield.setText(myString[1]);
-					if(cliente.getSex().equalsIgnoreCase("M"))
+					Client cliente=Travel_Agency.getInstances().findbyID(Integer.valueOf(myString[1]));
+					if(cliente!=null)
 					{
-						sexolbl.setText("Masculino");
-					}
-					else
-					{
-						sexolbl.setText("Femenino");
-					}
-					namelbl.setVisible(true);
-					lastlbl.setVisible(true);
-					viplbl.setVisible(true);
-					sexolbl.setVisible(true);
-					idfield.setVisible(true);
-				}			
+						namelbl.setText(cliente.getName());
+						lastlbl.setText(cliente.getLast_name());
+						viplbl.setText(String.valueOf(cliente.getVip_lv_id()));
+						idfield.setText(myString[1]);
+						if(cliente.getSex().equalsIgnoreCase("M"))
+						{
+							sexolbl.setText("Masculino");
+						}
+						else
+						{
+							sexolbl.setText("Femenino");
+						}
+						namelbl.setVisible(true);
+						lastlbl.setVisible(true);
+						viplbl.setVisible(true);
+						sexolbl.setVisible(true);
+						idfield.setVisible(true);
+					}	
+				}
 			}
 		});
 		userField.addKeyListener(new KeyAdapter() {
@@ -177,13 +139,12 @@ public class Reservation extends JDialog {
 			{
 				addUsertoTextField();
 		}});
-		userField.setEnabled(false);
-		userField.setColumns(10);
-		userField.setBounds(166, 33, 138, 20);
+		userField.setColumns(5);
+		userField.setBounds(66, 33, 238, 36);
 		panel.add(userField);
 		
 		JLabel label_3 = new JLabel("User:");
-		label_3.setBounds(121, 36, 35, 14);
+		label_3.setBounds(24, 33, 44, 36);
 		
 		panel.add(label_3);
 		JPanel panel_1 = new JPanel();
@@ -206,10 +167,13 @@ public class Reservation extends JDialog {
 			String[] columnames = {"Trip ID","Bus ID","Leaving at"};
 			tripTableModel = new DefaultTableModel();
 			tripTableModel.setColumnIdentifiers(columnames);
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			table.setModel(tripTableModel);
 			table.getColumnModel().getColumn(0).setPreferredWidth(170);
 			table.getColumnModel().getColumn(1).setPreferredWidth(170);
 			table.getColumnModel().getColumn(2).setPreferredWidth(170);
+			
 			//loadTripsTable(Travel_Agency.getInstances().getTrips());
 		
 		destCombo = new JComboBox<String>();
@@ -220,26 +184,17 @@ public class Reservation extends JDialog {
 			}
 		});
 		 loadDestStations();
-		destCombo.setBounds(22, 36, 220, 20);
+		destCombo.setBounds(22, 36, 211, 32);
 		panel_1.add(destCombo);
 		
-		JLabel lblQty = new JLabel("Qty");
-		lblQty.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblQty.setBounds(307, 11, 39, 14);
-		panel_1.add(lblQty);
-		
-		qtyspn = new JSpinner();
-		qtyspn.setBounds(297, 36, 49, 20);
-		panel_1.add(qtyspn);
-		
-		JLabel lblTable = new JLabel("Table");
+		JLabel lblTable = new JLabel("Available Trips");
 		lblTable.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTable.setBounds(184, 74, 49, 14);
+		lblTable.setBounds(22, 79, 124, 14);
 		panel_1.add(lblTable);
 					
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
-		panel_2.setBounds(10, 200, 317, 196);
+		panel_2.setBounds(10, 143, 317, 253);
 		contentPanel.add(panel_2);
 		panel_2.setLayout(null);
 		
@@ -249,54 +204,59 @@ public class Reservation extends JDialog {
 		panel_2.add(lblUserInfo);
 		
 		JLabel lblNombre = new JLabel("Name");
-		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNombre.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblNombre.setBounds(10, 73, 74, 14);
 		panel_2.add(lblNombre);
 		
 		JLabel lblVipLvl = new JLabel("VIP lvl.");
-		lblVipLvl.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblVipLvl.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblVipLvl.setBounds(10, 123, 74, 14);
 		panel_2.add(lblVipLvl);
 		
 		JLabel lblLastName = new JLabel("Last name");
-		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblLastName.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblLastName.setBounds(10, 98, 74, 14);
 		panel_2.add(lblLastName);
 		
-		 namelbl = new JLabel("namelbl");
-		namelbl.setBounds(96, 71, 74, 14);
+		 namelbl = new JLabel("");
+		 namelbl.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		namelbl.setBounds(142, 65, 74, 14);
 		panel_2.add(namelbl);
 		namelbl.setVisible(false);
 		
 		
-		 lastlbl = new JLabel("lastlbl");
-		lastlbl.setBounds(94, 98, 100, 14);
+		 lastlbl = new JLabel("");
+		 lastlbl.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lastlbl.setBounds(140, 92, 100, 14);
 		panel_2.add(lastlbl);
 		lastlbl.setVisible(false);
 		
-		 viplbl = new JLabel("viplbl");
-		viplbl.setBounds(94, 123, 100, 14);
+		 viplbl = new JLabel("");
+		 viplbl.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		viplbl.setBounds(140, 117, 100, 14);
 		panel_2.add(viplbl);
 		viplbl.setVisible(false);
 		
 		 lblSexo = new JLabel("Sexo");
-		lblSexo.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblSexo.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblSexo.setBounds(10, 148, 46, 14);
 		panel_2.add(lblSexo);
 		lblSexo.setVisible(true);
 		
-		 sexolbl = new JLabel("sexolbl");
-		sexolbl.setBounds(94, 148, 100, 14);
+		 sexolbl = new JLabel("");
+		 sexolbl.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		sexolbl.setBounds(140, 142, 100, 14);
 		panel_2.add(sexolbl);
 		
 		JLabel lblId = new JLabel("ID:");
-		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblId.setFont(new Font("Dialog", Font.BOLD, 14));
 		lblId.setBounds(10, 44, 56, 16);
 		panel_2.add(lblId);
 		
 		
-		idfield = new JLabel("idlbl");
-		idfield.setBounds(96, 44, 56, 16);
+		idfield = new JLabel("");
+		idfield.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		idfield.setBounds(142, 38, 56, 16);
 		panel_2.add(idfield);
 		idfield.setVisible(false);
 		sexolbl.setVisible(false);
@@ -309,7 +269,10 @@ public class Reservation extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) 
 					{
-						makeReservation();
+						if((table.getSelectedRow()!=-1) && !idfield.getText().isEmpty() )
+						{
+							makeReservation();
+						}
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -347,7 +310,7 @@ public class Reservation extends JDialog {
 			{
 				if(auxStation!=null)
 				{
-					destcombomodel.addElement(new String(auxStation.getName()+" ID:"+auxStation.getStation_id()));
+					destcombomodel.addElement(new String(auxStation.getName()+"  ID:"+auxStation.getStation_id()));
 				}
 			}
 		}
@@ -412,5 +375,17 @@ public class Reservation extends JDialog {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public boolean existsInUsers(String name)
+	{
+		for(Client auxClient: Travel_Agency.getInstances().getClients())
+		{
+			//&&(name.indexOf(Integer.toString(auxClient.getCliente_id())))!=-1
+			if((name.indexOf(auxClient.getName())>0))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
