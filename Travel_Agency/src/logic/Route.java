@@ -6,14 +6,16 @@ public class Route
 	private int Origing_station;
 	private int destination_station;
 	private int route_type_id;
+	private int departure_time;
 
-	public Route(int route_ID, int origing_station, int destination_station,int route_type_id) 
+	public Route(int route_ID, int origing_station, int destination_station,int route_type_id, int departure_time) 
 	{
 		super();
 		this.route_ID = route_ID;
 		Origing_station = origing_station;
 		this.destination_station = destination_station;
 		this.route_type_id = route_type_id;
+		this.setDeparture_time(departure_time);
 	}
 	public int getRoute_ID() 
 	{
@@ -46,6 +48,12 @@ public class Route
 	public void setRoute_type_id(int route_type_id) 
 	{
 		this.route_type_id = route_type_id;
+	}
+	public int getDeparture_time() {
+		return departure_time;
+	}
+	public void setDeparture_time(int departure_time) {
+		this.departure_time = departure_time;
 	}
 	
 }
