@@ -53,6 +53,7 @@ public class Client
 	public String getLast_name() {
 		return last_name;
 	}
+
 	public void setCliente_id(int cliente_id) {
 		this.cliente_id = cliente_id;
 	}
@@ -78,5 +79,4 @@ public class Client
 		this.last_name = last_name;
 	}
 	
-
 }

@@ -12,10 +12,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import logic.Travel_Agency;
+
 public class Welcome {
 
 	private JFrame mainFrame;
-	private Insert myInsert;
+	private Reservation myReservation;
+	private  Travel_Agency myAgency;
 
 	/**
 	 * Launch the application.
@@ -26,6 +29,7 @@ public class Welcome {
 				try {
 					Welcome window = new Welcome();
 					window.mainFrame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -38,6 +42,8 @@ public class Welcome {
 	 */
 	public Welcome() {
 		initialize();
+		myAgency.getInstances().LoadEverything();
+		
 	}
 
 	/**
@@ -46,12 +52,11 @@ public class Welcome {
 	private void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.getContentPane().setFont(
-				new Font("Times New Roman", Font.PLAIN, 13));
+		new Font("Times New Roman", Font.PLAIN, 13));
 		mainFrame.getContentPane().setBackground(SystemColor.controlHighlight);
 		mainFrame.getContentPane().setForeground(Color.WHITE);
 		mainFrame.getContentPane().setLayout(null);
-		mainFrame.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC,
-				16));
+		mainFrame.setFont(new Font("Times New Roman", Font.BOLD | Font.ITALIC,16));
 		mainFrame.setTitle("Ace Travel Agency");
 		mainFrame.setBackground(SystemColor.activeCaption);
 		mainFrame.setResizable(false);
@@ -66,7 +71,8 @@ public class Welcome {
 		JMenuItem mntmReserve = new JMenuItem("Reserve");
 		mntmReserve.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMyInsert(new Insert());
+				myReservation=new Reservation();
+				myReservation.setVisible(true);
 			}
 		});
 		mnReservations.add(mntmReserve);
@@ -77,12 +83,13 @@ public class Welcome {
 		JMenuItem mntmAboutUs = new JMenuItem("About us");
 		mnHelp.add(mntmAboutUs);
 	}
-
-	public Insert getMyInsert() {
-		return myInsert;
+	
+	public JFrame getMainFrame() {
+		return mainFrame;
 	}
 
-	public void setMyInsert(Insert myInsert) {
-		this.myInsert = myInsert;
+	public void setMainFrame(JFrame mainFrame) {
+		this.mainFrame = mainFrame;
 	}
+
 }

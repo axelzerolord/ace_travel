@@ -5,11 +5,18 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
 import logic.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -18,10 +25,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 import com.mxrck.autocompleter.TextAutoCompleter;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JScrollPane;
 
 
 public class Reservation extends JDialog {
@@ -38,6 +53,16 @@ public class Reservation extends JDialog {
 	private JRadioButton expressRadio;
 	private JComboBox<String> destCombo;
 	private ButtonGroup group;
+	private JLabel namelbl;
+	private JLabel lastlbl;
+	private JLabel viplbl;
+	private JLabel lblSexo;
+	private JLabel sexolbl;
+	private DefaultComboBoxModel destcombomodel;
+	private Object[] fila;
+	private DefaultTableModel tripTableModel;
+	private JTable table;
+	private JLabel idfield;
 	/**
 	 * Launch the application.
 	 */
@@ -73,6 +98,8 @@ public class Reservation extends JDialog {
 		ExpressName.setColumns(10);
 		ExpressName.setBounds(62, 124, 190, 20);
 		panel.add(ExpressName);
+		
+		
 		
 		JLabel lblAnonymousFields = new JLabel("Anonymous Fields");
 		lblAnonymousFields.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -113,16 +140,42 @@ public class Reservation extends JDialog {
 		label_2.setBounds(121, 11, 83, 14);
 		panel.add(label_2);
 		
+		
+		
 		userField = new JTextField();
+		userField.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				String[] myString = userField.getText().split(":");
+				Client cliente=Travel_Agency.getInstances().findbyID(Integer.valueOf(myString[1]));
+				if(cliente!=null)
+				{
+					namelbl.setText(cliente.getName());
+					lastlbl.setText(cliente.getLast_name());
+					viplbl.setText(String.valueOf(cliente.getVip_lv_id()));
+					idfield.setText(myString[1]);
+					if(cliente.getSex().equalsIgnoreCase("M"))
+					{
+						sexolbl.setText("Masculino");
+					}
+					else
+					{
+						sexolbl.setText("Femenino");
+					}
+					namelbl.setVisible(true);
+					lastlbl.setVisible(true);
+					viplbl.setVisible(true);
+					sexolbl.setVisible(true);
+					idfield.setVisible(true);
+				}			
+			}
+		});
 		userField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) 
 			{
 				addUsertoTextField();
-				if(e.getKeyChar()<'0' |e.getKeyChar()>'9')
-				{
-					e.consume();
-				}
 		}});
 		userField.setEnabled(false);
 		userField.setColumns(10);
@@ -131,8 +184,8 @@ public class Reservation extends JDialog {
 		
 		JLabel label_3 = new JLabel("User:");
 		label_3.setBounds(121, 36, 35, 14);
-		panel.add(label_3);
 		
+		panel.add(label_3);
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
 		panel_1.setBounds(337, 11, 382, 385);
@@ -144,7 +197,29 @@ public class Reservation extends JDialog {
 		lblDestination.setBounds(99, 11, 83, 14);
 		panel_1.add(lblDestination);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(22, 106, 348, 266);
+		panel_1.add(scrollPane);
+		
+			table = new JTable();
+			scrollPane.setViewportView(table);
+			String[] columnames = {"Trip ID","Bus ID","Leaving at"};
+			tripTableModel = new DefaultTableModel();
+			tripTableModel.setColumnIdentifiers(columnames);
+			table.setModel(tripTableModel);
+			table.getColumnModel().getColumn(0).setPreferredWidth(170);
+			table.getColumnModel().getColumn(1).setPreferredWidth(170);
+			table.getColumnModel().getColumn(2).setPreferredWidth(170);
+			//loadTripsTable(Travel_Agency.getInstances().getTrips());
+		
 		destCombo = new JComboBox<String>();
+		destCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) 
+			{
+				loadTripsTable(Travel_Agency.getInstances().getTrips());
+			}
+		});
+		 loadDestStations();
 		destCombo.setBounds(22, 36, 220, 20);
 		panel_1.add(destCombo);
 		
@@ -161,7 +236,7 @@ public class Reservation extends JDialog {
 		lblTable.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblTable.setBounds(184, 74, 49, 14);
 		panel_1.add(lblTable);
-		
+					
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
 		panel_2.setBounds(10, 200, 317, 196);
@@ -175,44 +250,55 @@ public class Reservation extends JDialog {
 		
 		JLabel lblNombre = new JLabel("Name");
 		lblNombre.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNombre.setBounds(10, 40, 74, 14);
+		lblNombre.setBounds(10, 73, 74, 14);
 		panel_2.add(lblNombre);
 		
 		JLabel lblVipLvl = new JLabel("VIP lvl.");
 		lblVipLvl.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblVipLvl.setBounds(10, 90, 74, 14);
+		lblVipLvl.setBounds(10, 123, 74, 14);
 		panel_2.add(lblVipLvl);
 		
 		JLabel lblLastName = new JLabel("Last name");
 		lblLastName.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblLastName.setBounds(10, 65, 74, 14);
+		lblLastName.setBounds(10, 98, 74, 14);
 		panel_2.add(lblLastName);
 		
-		JLabel namelbl = new JLabel("namelbl");
-		namelbl.setBounds(94, 40, 100, 14);
+		 namelbl = new JLabel("namelbl");
+		namelbl.setBounds(96, 71, 74, 14);
 		panel_2.add(namelbl);
 		namelbl.setVisible(false);
 		
 		
-		JLabel lastlbl = new JLabel("lastlbl");
-		lastlbl.setBounds(94, 65, 100, 14);
+		 lastlbl = new JLabel("lastlbl");
+		lastlbl.setBounds(94, 98, 100, 14);
 		panel_2.add(lastlbl);
 		lastlbl.setVisible(false);
 		
-		JLabel viplbl = new JLabel("viplbl");
-		viplbl.setBounds(94, 90, 100, 14);
+		 viplbl = new JLabel("viplbl");
+		viplbl.setBounds(94, 123, 100, 14);
 		panel_2.add(viplbl);
 		viplbl.setVisible(false);
 		
-		JLabel lblSexo = new JLabel("Sexo");
+		 lblSexo = new JLabel("Sexo");
 		lblSexo.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblSexo.setBounds(10, 115, 46, 14);
+		lblSexo.setBounds(10, 148, 46, 14);
 		panel_2.add(lblSexo);
-		lblSexo.setVisible(false);
+		lblSexo.setVisible(true);
 		
-		JLabel sexolbl = new JLabel("sexolbl");
-		sexolbl.setBounds(94, 115, 56, 14);
+		 sexolbl = new JLabel("sexolbl");
+		sexolbl.setBounds(94, 148, 100, 14);
 		panel_2.add(sexolbl);
+		
+		JLabel lblId = new JLabel("ID:");
+		lblId.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblId.setBounds(10, 44, 56, 16);
+		panel_2.add(lblId);
+		
+		
+		idfield = new JLabel("idlbl");
+		idfield.setBounds(96, 44, 56, 16);
+		panel_2.add(idfield);
+		idfield.setVisible(false);
 		sexolbl.setVisible(false);
 		{
 			JPanel buttonPane = new JPanel();
@@ -221,7 +307,9 @@ public class Reservation extends JDialog {
 			{
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
+					public void actionPerformed(ActionEvent e) 
+					{
+						makeReservation();
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -242,12 +330,87 @@ public class Reservation extends JDialog {
 	}
 
 	public void addUsertoTextField() 
-	{
-		
+	{		
 		TextAutoCompleter textAutoAcompleter = new TextAutoCompleter( userField );
-		for(Client clientes: )
+		for(Client auxCliente: Travel_Agency.getInstances().getClients())
 		{	
-			//textAutoAcompleter.addItem(worker.getId());
+			textAutoAcompleter.addItem(auxCliente.getName()+" "+auxCliente.getLast_name()+" ID:"+auxCliente.getCliente_id());
+		}
+	}
+	
+	public void loadDestStations()
+	{
+		destcombomodel= new DefaultComboBoxModel();
+		if(!Travel_Agency.getInstances().getStations().isEmpty())
+		{
+			for(Station auxStation:Travel_Agency.getInstances().getStations())
+			{
+				if(auxStation!=null)
+				{
+					destcombomodel.addElement(new String(auxStation.getName()+" ID:"+auxStation.getStation_id()));
+				}
+			}
+		}
+		destcombomodel.insertElementAt(new String ("None"), 0);
+		destCombo.setModel(destcombomodel);	
+		//destCombo.setSelectedIndex(0);
+	}
+	
+	public void loadTripsTable(ArrayList<Trip> trips)
+	{
+		tripTableModel.setRowCount(0);
+		fila = new Object[tripTableModel.getColumnCount()];
+		
+			for(Trip auxTrip: Travel_Agency.getInstances().getTrips())
+			{
+				Route thisTripsRoute=Travel_Agency.getInstances().findRouteByID(auxTrip.getRoute_ID());
+				String[] mySplittings=(destCombo.getSelectedItem().toString().split(":"));
+				if(destCombo.getSelectedIndex()>0)
+				{
+					if(thisTripsRoute.getDestination_station()==Integer.valueOf(mySplittings[1]))
+					{
+						fila[0]=auxTrip.getTrip_ID();				
+						fila[1]=auxTrip.getBus_ID();
+						fila[2]=auxTrip.getExit_time();
+						tripTableModel.addRow(fila);
+					}
+				}
+			}
+			table.setModel(tripTableModel);
+	}
+	
+	public void makeReservation()
+	{
+		try {
+		//reservacion id, cliente id, viaje_id, fecha reservacion, monto penalidad
+		DatabaseHandler myHandler = new DatabaseHandler();
+		ResultSet myRS = myHandler.runQuery("Select count(reservacion_id) from reservaciones");
+		myRS.next();
+		int reservation_id,client_id,trip_id;
+		reservation_id=myRS.getInt(1);
+		
+		//date managing
+		myRS=myHandler.runQuery("Select sysdate from dual");
+		myRS.next();
+		Date current_date;
+		current_date = myRS.getDate(1);
+		String parsed_date="(select to_char(to_date('"+current_date+"', 'yyyy-mm-dd'), 'dd MON yyyy') from dual)";
+		//date managed
+		trip_id=Integer.valueOf(String.valueOf(table.getValueAt(table.getSelectedRow(),0)));
+		client_id=Integer.valueOf(idfield.getText());
+		Reservations newReservations = new Reservations(reservation_id, client_id, trip_id, current_date,null , 0);
+		Travel_Agency.getInstances().getReservations().add(newReservations);
+		String myUpdate="Insert into reservaciones (reservacion_id,cliente_id,viaje_id,fecha_reservacion,fecha_cancelacion,monto_penalidad)"
+				+ "Values("+reservation_id+","+client_id+","+trip_id+","+parsed_date+",null,0)";
+		System.out.println(myUpdate);
+		myHandler.runUpdate(myUpdate);
+		myHandler.closeConnection();
+		
+		
+		//myHandler.runQuery("")
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

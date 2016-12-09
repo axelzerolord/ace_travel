@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 
 
-class Travel_Agency 
+public class Travel_Agency 
 {	
 	private static Travel_Agency travel_agency;
 	private ArrayList<Client> clients;
@@ -15,6 +15,7 @@ class Travel_Agency
 	private ArrayList<Reservations> reservations;
 	private ArrayList<Tickets> tickets;
 	private ArrayList<Guests> guests; 
+	private ArrayList<Station> stations;
 	
 	public static Travel_Agency getInstances()
 	{
@@ -31,6 +32,10 @@ class Travel_Agency
 		this.clients = new ArrayList<Client>();
 		this.routes = new ArrayList<Route>();
 		this.trips = new ArrayList<Trip>();
+		this.reservations = new ArrayList<Reservations>();
+		this.tickets = new ArrayList<Tickets>();
+		this.guests   = new ArrayList<Guests>();
+		this.stations = new ArrayList<Station>();
 	}
 
 	public ArrayList<Client> getClients() {
@@ -56,7 +61,12 @@ class Travel_Agency
 	public ArrayList<Guests> getGuests() {
 		return guests;
 	}
-	void loadclients() throws SQLException
+	
+	public ArrayList<Station> getStations() {
+		return stations;
+	}
+
+	public void loadclients() throws SQLException
 	{
 		DatabaseHandler myHandler = new DatabaseHandler();
 		ResultSet sqlClients = myHandler.runQuery("Select * from clientes");
@@ -65,6 +75,7 @@ class Travel_Agency
 			Client newClient = new Client(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4), sqlClients.getString(5), sqlClients.getDate(6), sqlClients.getString(7), sqlClients.getString(8));
 			Travel_Agency.getInstances().getClients().add(newClient);
 		}
+		myHandler.closeConnection();
 	}
 	
 	public void loadroutes() throws SQLException
@@ -76,6 +87,7 @@ class Travel_Agency
 			Route newRoute = new Route(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4),sqlClients.getInt(5));
 			Travel_Agency.getInstances().getRoutes().add(newRoute);
 		}
+		myHandler.closeConnection();
 	}
 	
 	public void loadtrips() throws SQLException
@@ -87,6 +99,7 @@ class Travel_Agency
 			Trip newTrip = new Trip(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4),sqlClients.getInt(5));
 			Travel_Agency.getInstances().getTrips().add(newTrip);
 		}
+		myHandler.closeConnection();
 	}
 	
 	public void loadreservations() throws SQLException
@@ -98,6 +111,7 @@ class Travel_Agency
 			Reservations reservations = new Reservations(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getDate(4), sqlClients.getDate(5), sqlClients.getInt(6));
 			Travel_Agency.getInstances().getReservations().add(reservations);
 		}
+		myHandler.closeConnection();
 	}
 	
 	public void loadtickets() throws SQLException
@@ -109,6 +123,7 @@ class Travel_Agency
 			Tickets tickets = new Tickets(sqlClients.getInt(1), sqlClients.getInt(2), sqlClients.getInt(3), sqlClients.getInt(4), sqlClients.getInt(5), sqlClients.getInt(6),sqlClients.getInt(7),sqlClients.getInt(8));
 			Travel_Agency.getInstances().getTickets().add(tickets);
 		}
+		myHandler.closeConnection();
 	}
 	
 	public void loadGuests() throws SQLException
@@ -120,9 +135,69 @@ class Travel_Agency
 			Guests guests = new Guests(sqlClients.getInt(1), sqlClients.getString(2), sqlClients.getString(3), sqlClients.getString(4), sqlClients.getDate(5));
 			Travel_Agency.getInstances().getGuests().add(guests);
 		}
+		myHandler.closeConnection();
 	}
-
-
-
-
+	
+	public void loadstations() throws SQLException
+	{
+		DatabaseHandler myHandler = new DatabaseHandler();
+		ResultSet sqlClients = myHandler.runQuery("Select * from estaciones");
+		while (sqlClients.next())
+		{
+			Station station = new Station(sqlClients.getInt(1),sqlClients.getInt(2), sqlClients.getString(3));
+			Travel_Agency.getInstances().getStations().add(station);
+		}
+		myHandler.closeConnection();
+	}
+	
+	public void LoadEverything()
+	{
+		try {
+			loadclients();
+			loadGuests();
+			loadreservations();
+			loadroutes();
+			loadtickets();
+			loadtrips();
+			loadstations();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Client findbyID(int id)
+	{
+		for(Client auxClient: Travel_Agency.getInstances().getClients())
+		{
+			if(auxClient.getCliente_id()==id)
+			{
+				return auxClient;
+			}
+		}
+		return null;
+	}
+	public Trip findTripByID(int id)
+	{
+		for(Trip auxTrip: Travel_Agency.getInstances().getTrips())
+		{
+			if(auxTrip.getTrip_ID()==id)
+			{
+				return auxTrip;
+			}
+		}
+		return null;
+	}
+	
+	public Route findRouteByID(int id)
+	{
+		for(Route auxRoute: Travel_Agency.getInstances().getRoutes())
+		{
+			if(auxRoute.getRoute_ID()==id)
+			{
+				return auxRoute;
+			}
+		}
+		return null;
+	}
 }

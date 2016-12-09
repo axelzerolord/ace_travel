@@ -1,12 +1,10 @@
 package interfaces;
 
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -16,10 +14,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-
 import logic.DatabaseHandler;
 
-@SuppressWarnings("unused")
 public class RegisterBus extends JDialog {
 
 	/**
@@ -88,6 +84,8 @@ public class RegisterBus extends JDialog {
 		RegisterBrand.loadBrandCBox(brandComboBox);
 		brandComboBox.setBounds(166, 46, 158, 20);
 		contentPanel.add(brandComboBox);
+		
+		
 		
 		RegisterModel.loadModelCBox(modelComboBox, brandComboBox);
 		modelComboBox.setBounds(166, 71, 158, 20);
