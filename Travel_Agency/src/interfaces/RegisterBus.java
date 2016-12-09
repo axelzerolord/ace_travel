@@ -1,30 +1,23 @@
 package interfaces;
 
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JSpinner;
-import javax.swing.JFormattedTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.text.MaskFormatter;
-
 import java.awt.Color;
-
-import logic.*;
-
-import javax.swing.SwingConstants;
-
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.util.Date;
+import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+
+import logic.DatabaseHandler;
 
 @SuppressWarnings("unused")
 public class RegisterBus extends JDialog {

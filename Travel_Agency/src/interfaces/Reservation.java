@@ -1,26 +1,35 @@
 package interfaces;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import logic.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
-import java.awt.Font;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+import com.mxrck.autocompleter.TextAutoCompleter;
+
 
 public class Reservation extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField ExpressName;
 	private JTextField userField;
@@ -105,11 +114,16 @@ public class Reservation extends JDialog {
 		panel.add(label_2);
 		
 		userField = new JTextField();
-		userField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
+		userField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) 
+			{
+				addUsertoTextField();
+				if(e.getKeyChar()<'0' |e.getKeyChar()>'9')
+				{
+					e.consume();
+				}
+		}});
 		userField.setEnabled(false);
 		userField.setColumns(10);
 		userField.setBounds(166, 33, 138, 20);
@@ -224,6 +238,16 @@ public class Reservation extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+
+	public void addUsertoTextField() 
+	{
+		
+		TextAutoCompleter textAutoAcompleter = new TextAutoCompleter( userField );
+		for(Client clientes: )
+		{	
+			//textAutoAcompleter.addItem(worker.getId());
 		}
 	}
 }
